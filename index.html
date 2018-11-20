@@ -60,8 +60,6 @@
     Вместе с ним вас ждет увлекательное приключение&hellip;
   </p>
 
-  <canvas id="canvas"></canvas>
-
   <div class="demo"></div>
 
   <div class="setup-open">
@@ -190,10 +188,6 @@
   var wizardWidth = 70;
 
   var getFireballSpeed = function (left) {
-    var fireballSpeed = 2;
-    if (left) {
-      fireballSpeed = 5;
-    }
     return left ? 5 : 2;
   };
 
