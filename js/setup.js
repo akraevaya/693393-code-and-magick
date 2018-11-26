@@ -12,7 +12,7 @@ userDialog.classList.remove('hidden');
 var similarWizards = userDialog.querySelector('.setup-similar');
 similarWizards.classList.remove('hidden');
 
-var similarList = document.querySelector('.setup-similar-list');
+var similarList = similarWizards.querySelector('.setup-similar-list');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 
 var getRandomElement = function (arr) {
