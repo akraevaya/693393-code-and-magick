@@ -10,10 +10,13 @@ var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
 var FIREBALL_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
 
 // Открытие/закрытие окна настройки персонажа
-
 var setupOpen = document.querySelector('.setup-open');
 var setup = document.querySelector('.setup');
 var setupClose = setup.querySelector('.setup-close');
+
+// Похожие персонажи
+var similarWizards = setup.querySelector('.setup-similar');
+var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 
 var onPopupEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
@@ -52,12 +55,7 @@ setupClose.addEventListener('keydown', function (evt) {
 });
 
 // Похожие персонажи
-
-var similarWizards = setup.querySelector('.setup-similar');
 similarWizards.classList.remove('hidden');
-
-var similarList = similarWizards.querySelector('.setup-similar-list');
-var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 
 var getRandomElement = function (arr) {
   var randomIndex = Math.floor(Math.random() * (arr.length - 1));
@@ -91,6 +89,7 @@ var renderWizard = function (wizard) {
 };
 
 var renderSimilarWizards = function () {
+  var similarList = similarWizards.querySelector('.setup-similar-list');
   var wizards = createWizardsArr();
   var fragment = document.createDocumentFragment();
 
@@ -104,50 +103,55 @@ var renderSimilarWizards = function () {
 renderSimilarWizards();
 
 // Валидация
+var inputValidation = function (target) {
+  var errMsg = '';
 
-var userNameInput = setup.querySelector('.setup-user-name');
-
-userNameInput.addEventListener('invalid', function (_evt) {
-  if (userNameInput.validity.tooShort) {
-    userNameInput.setCustomValidity('Имя должно состоять минимум из двух символов');
-  } else if (userNameInput.validity.tooLong) {
-    userNameInput.setCustomValidity('Имя не должно быть длиннее 25 символов');
-  } else if (userNameInput.validity.valueMissing) {
-    userNameInput.setCustomValidity('Обязательное для заполнения поле');
-  } else {
-    userNameInput.setCustomValidity('');
+  if (target.validity.tooShort) {
+    errMsg = 'Имя должно состоять минимум из двух символов';
+  } else if (target.validity.tooLong) {
+    errMsg = 'Имя не должно быть длиннее 25 символов';
+  } else if (target.validity.valueMissing) {
+    errMsg = 'Обязательное для заполнения поле';
   }
+
+  target.setCustomValidity(errMsg);
+};
+
+// Изменение цветовых параметров
+var changeHiddenField = function (name, value) {
+  var input = setup.querySelector('input[name="' + name + '"');
+  input.value = value;
+};
+
+var changeCoat = function (target, color) {
+  target.style.fill = color;
+  changeHiddenField('coat-color', color);
+};
+
+var changeEyes = function (target, color) {
+  target.style.fill = color;
+  changeHiddenField('eyes-color', color);
+};
+
+var changeFireball = function (target, color) {
+  target.style.backgroundColor = color;
+  changeHiddenField('fireball-color', color);
+};
+
+// Обработчики параметров персонажа
+setup.querySelector('.setup-wizard .wizard-coat').addEventListener('click', function (evt) {
+  changeCoat(evt.target, getRandomElement(COAT_COLORS));
 });
 
-// Изменение цвета мантии персонажа по нажатию
-
-var setupWizardCoat = setup.querySelector('.setup-wizard .wizard-coat');
-var wizardCoatValue = setup.querySelector('input[name="coat-color"]');
-
-setupWizardCoat.addEventListener('click', function () {
-  var coatColorRandom = getRandomElement(COAT_COLORS);
-  setupWizardCoat.style.fill = coatColorRandom;
-  wizardCoatValue.value = coatColorRandom;
+setup.querySelector('.setup-wizard .wizard-eyes').addEventListener('click', function (evt) {
+  changeEyes(evt.target, getRandomElement(EYES_COLORS));
 });
 
-// Изменение цвета глаз персонажа по нажатию
-
-var setupWizardEyes = setup.querySelector('.setup-wizard .wizard-eyes');
-var wizardEyesValue = setup.querySelector('input[name="eyes-color"]');
-
-setupWizardEyes.addEventListener('click', function () {
-  var eyesColorRandom = getRandomElement(EYES_COLORS);
-  setupWizardEyes.style.fill = eyesColorRandom;
-  wizardEyesValue.value = eyesColorRandom;
+setup.querySelector('.setup-fireball-wrap').addEventListener('click', function (evt) {
+  changeFireball(evt.target, getRandomElement(FIREBALL_COLORS));
 });
 
-// Изменение цвета фаерболов по нажатию
-
-var setupFireballColor = setup.querySelector('.setup-fireball-wrap');
-var fireballValue = setup.querySelector('input[name="fireball-color"]');
-
-setupFireballColor.addEventListener('click', function () {
-  var fireballColorRandom = getRandomElement(FIREBALL_COLORS);
-  setupFireballColor.style.backgroundColor = fireballColorRandom;
-  fireballValue.value = fireballColorRandom;
+// Обработчик валидации
+setup.querySelector('.setup-user-name').addEventListener('invalid', function (evt) {
+  inputValidation(evt.target);
 });
