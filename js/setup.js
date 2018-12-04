@@ -9,6 +9,24 @@ var COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161
 var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
 var FIREBALL_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
 
+var WIZARD_INFO = {
+  coat: {
+    colors: COAT_COLORS,
+    styleOption: 'fill',
+    hiddenFieldName: 'coat-color'
+  },
+  eyes: {
+    colors: EYES_COLORS,
+    styleOption: 'fill',
+    hiddenFieldName: 'eyes-color'
+  },
+  fireball: {
+    colors: FIREBALL_COLORS,
+    styleOption: 'backgroundColor',
+    hiddenFieldName: 'fireball-color'
+  }
+};
+
 // Открытие/закрытие окна настройки персонажа
 var setupOpen = document.querySelector('.setup-open');
 var setup = document.querySelector('.setup');
@@ -123,33 +141,25 @@ var changeHiddenField = function (name, value) {
   input.value = value;
 };
 
-var changeCoat = function (target, color) {
-  target.style.fill = color;
-  changeHiddenField('coat-color', color);
+var changeElementStyle = function (target, option, value) {
+  target.style[option] = value;
 };
 
-var changeEyes = function (target, color) {
-  target.style.fill = color;
-  changeHiddenField('eyes-color', color);
+var onClickSetupWizard = function (type) {
+  var elementInfo = WIZARD_INFO[type];
+
+  return function (evt) {
+    var newColor = getRandomElement(elementInfo.colors);
+    changeElementStyle(evt.target, elementInfo.styleOption, newColor);
+    changeHiddenField(elementInfo.hiddenFieldName, newColor);
+  };
 };
 
-var changeFireball = function (target, color) {
-  target.style.backgroundColor = color;
-  changeHiddenField('fireball-color', color);
-};
+setup.querySelector('.setup-wizard .wizard-coat').addEventListener('click', onClickSetupWizard('coat'));
 
-// Обработчики параметров персонажа
-setup.querySelector('.setup-wizard .wizard-coat').addEventListener('click', function (evt) {
-  changeCoat(evt.target, getRandomElement(COAT_COLORS));
-});
+setup.querySelector('.setup-wizard .wizard-eyes').addEventListener('click', onClickSetupWizard('eyes'));
 
-setup.querySelector('.setup-wizard .wizard-eyes').addEventListener('click', function (evt) {
-  changeEyes(evt.target, getRandomElement(EYES_COLORS));
-});
-
-setup.querySelector('.setup-fireball-wrap').addEventListener('click', function (evt) {
-  changeFireball(evt.target, getRandomElement(FIREBALL_COLORS));
-});
+setup.querySelector('.setup-fireball-wrap').addEventListener('click', onClickSetupWizard('fireball'));
 
 // Обработчик валидации
 setup.querySelector('.setup-user-name').addEventListener('invalid', function (evt) {
