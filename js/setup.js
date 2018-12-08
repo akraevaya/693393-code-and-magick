@@ -8,6 +8,11 @@ var WIZARD_SURNAMES = ['да Марья', 'Верон', 'Мирабелла', '�
 var COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
 var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
 var FIREBALL_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
+var DEFAULT_START = {
+  top: '80px',
+  left: '50%'
+};
+
 
 // Открытие/закрытие окна настройки персонажа
 var setupOpen = document.querySelector('.setup-open');
@@ -31,6 +36,8 @@ var openPopup = function () {
 
 var closePopup = function () {
   setup.classList.add('hidden');
+  setup.style.top = DEFAULT_START.top;
+  setup.style.left = DEFAULT_START.left;
   document.removeEventListener('keydown', onPopupEscPress);
 };
 
